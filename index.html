@@ -1,1 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Merry Christmas</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://i.imgur.com/7zySox3.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 20%;
+      font-size: 3em;
+      text-shadow: 2px 2px 5px #000;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    #message {
+      position: relative;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="snow"></canvas>
+  <div id="message">
+  <h1 id="greeting">Merry Christmas!</h1>
+  </div>
 
+  <audio autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Get name from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name');
+    if (name) {
+      document.getElementById('greeting').innerText = "Merry Christmas from " + name + "!";
+    }
+
+    // Snow animation
+    const canvas = document.getElementById("snow");
+    const ctx = canvas.getContext("2d");
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+
+    let mp = 100;
+    let particles = [];
+
+    for (let i = 0; i < mp; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 4 + 1,
+        d: Math.random() * mp
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.beginPath();
+      for (let i = 0; i < mp; i++) {
+        const p = particles[i];
+        ctx.moveTo(p.x, p.y);
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+      }
+      ctx.fill();
+      update();
+    }
+
+    let angle = 0;
+
+    function update() {
+      angle += 0.01;
+      for (let i = 0; i < mp; i++) {
+        const p = particles[i];
+        p.y += Math.cos(angle + p.d) + 1 + p.r / 2;
+        p.x += Math.sin(angle) * 2;
+
+        if (p.x > W || p.x < 0 || p.y > H) {
+          p.x = Math.random() * W;
+          p.y = -10;
+        }
+      }
+    }
+
+    setInterval(draw, 33);
+  </script>
+</body>
+  </html>
